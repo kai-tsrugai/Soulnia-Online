@@ -4,269 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>ソウルニア・オンライン</title>
-  <!-- Three.js CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <!-- PeerJS CDN (オンライン通信用) -->
-  <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-    }
-    body {
-      background-color: #1a1a2e;
-      color: #fff;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-      touch-action: none;
-    }
-
-    /* --- ログイン画面モーダル --- */
-    #login-screen {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(135deg, #0f3460, #16213e);
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-    .login-box {
-      background: rgba(22, 33, 62, 0.9);
-      border: 2px solid #e94560;
-      border-radius: 15px;
-      padding: 25px;
-      width: 100%;
-      max-width: 340px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-    }
-    .login-box h2 {
-      text-align: center;
-      color: #e94560;
-      font-size: 20px;
-      margin-bottom: 5px;
-    }
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      font-size: 12px;
-    }
-    .input-group input, .input-group select {
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #444;
-      background: #0f3460;
-      color: white;
-      font-size: 14px;
-    }
-    #start-game-btn {
-      padding: 12px;
-      background: #e94560;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      font-weight: bold;
-      font-size: 15px;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      margin-top: 10px;
-    }
-
-    /* --- ゲーム内UI --- */
-    #game-ui {
-      display: none;
-      flex-direction: column;
-      height: 100vh;
-    }
-
-    #header {
-      height: 70px;
-      background: #16213e;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-size: 12px;
-      font-weight: bold;
-      border-bottom: 2px solid #0f3460;
-      z-index: 10;
-      gap: 3px;
-    }
-    .header-row {
-      display: flex;
-      width: 100%;
-      justify-content: space-around;
-      align-items: center;
-    }
-
-    #game-container {
-      flex: 1;
-      position: relative;
-      background: #0f3460;
-    }
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    #ad-container {
-      height: 60px;
-      background-color: #222;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #888;
-      font-size: 12px;
-      border-top: 1px solid #444;
-      z-index: 10;
-    }
-
-    /* ボタン類 */
-    .top-btn {
-      position: absolute;
-      top: 12px;
-      padding: 6px 10px;
-      background: #e94560;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-weight: bold;
-      font-size: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-      cursor: pointer;
-      z-index: 10;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    body { background-color: #1a1a2e; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; touch-action: none; }
+    #login-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0f3460, #16213e); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+    .login-box { background: rgba(22, 33, 62, 0.9); border: 2px solid #e94560; border-radius: 15px; padding: 25px; width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+    .login-box h2 { text-align: center; color: #e94560; font-size: 20px; margin-bottom: 5px; }
+    .input-group { display: flex; flex-direction: column; gap: 5px; font-size: 12px; }
+    .input-group input, .input-group select { padding: 10px; border-radius: 8px; border: 1px solid #444; background: #0f3460; color: white; font-size: 14px; }
+    #start-game-btn { padding: 12px; background: #e94560; color: white; border: none; border-radius: 20px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); margin-top: 10px; }
+    #game-ui { display: none; flex-direction: column; height: 100vh; width: 100vw; }
+    #header { height: 70px; background: #16213e; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 12px; font-weight: bold; border-bottom: 2px solid #0f3460; z-index: 10; gap: 3px; }
+    .header-row { display: flex; width: 100%; justify-content: space-around; align-items: center; }
+    #game-container { flex: 1; position: relative; background: #0f3460; width: 100%; overflow: hidden; }
+    canvas { width: 100% !important; height: 100% !important; display: block; }
+    #ad-container { height: 60px; background-color: #222; display: flex; justify-content: center; align-items: center; color: #888; font-size: 12px; border-top: 1px solid #444; z-index: 10; }
+    .top-btn { position: absolute; top: 12px; padding: 6px 10px; background: #e94560; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); cursor: pointer; z-index: 10; }
     #upgrade-btn { left: 8px; }
     #skin-btn { left: 110px; background: #3498db; }
     #zukan-btn { right: 8px; background: #00b894; }
     #logout-btn { right: 80px; background: #6c5ce7; }
-
-    /* モーダル */
-    .modal {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.95);
-      z-index: 50;
-      display: none;
-      flex-direction: column;
-      padding: 20px;
-    }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 15px;
-      border-bottom: 2px solid #1f4068;
-      padding-bottom: 10px;
-    }
-    .close-btn {
-      background: #e94560;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-weight: bold;
-    }
-
-    #zukan-list {
-      flex: 1;
-      overflow-y: auto;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      padding-bottom: 20px;
-    }
-    .zukan-item {
-      background: #16213e;
-      border: 1px solid #1f4068;
-      border-radius: 8px;
-      padding: 10px;
-      font-size: 11px;
-    }
+    .modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); z-index: 50; display: none; flex-direction: column; padding: 20px; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid #1f4068; padding-bottom: 10px; }
+    .close-btn { background: #e94560; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; }
+    #zukan-list { flex: 1; overflow-y: auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding-bottom: 20px; }
+    .zukan-item { background: #16213e; border: 1px solid #1f4068; border-radius: 8px; padding: 10px; font-size: 11px; }
     .zukan-item.locked { opacity: 0.4; }
-
-    .skin-picker-container {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      font-size: 14px;
-    }
-    .color-presets {
-      display: flex;
-      gap: 10px;
-    }
-    .color-btn {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      border: 2px solid #fff;
-      cursor: pointer;
-    }
-
-    #popup {
-      position: absolute;
-      top: 70px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.85);
-      color: #00d2d3;
-      padding: 8px 14px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: bold;
-      display: none;
-      z-index: 15;
-      text-align: center;
-      pointer-events: none;
-      border: 1px solid #00d2d3;
-    }
-
-    #joystick-base {
-      position: absolute;
-      bottom: 40px;
-      left: 40px;
-      width: 120px;
-      height: 120px;
-      background: rgba(255, 255, 255, 0.15);
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      z-index: 20;
-      display: none;
-    }
-    #joystick-stick {
-      position: absolute;
-      top: 35px;
-      left: 35px;
-      width: 50px;
-      height: 50px;
-      background: rgba(255, 255, 255, 0.6);
-      border-radius: 50%;
-      pointer-events: none;
-    }
+    .skin-picker-container { display: flex; flex-direction: column; gap: 15px; font-size: 14px; }
+    .color-presets { display: flex; gap: 10px; }
+    .color-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; }
+    #popup { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.85); color: #00d2d3; padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: bold; display: none; z-index: 15; text-align: center; pointer-events: none; border: 1px solid #00d2d3; }
+    #joystick-base { position: absolute; bottom: 40px; left: 40px; width: 120px; height: 120px; background: rgba(255, 255, 255, 0.15); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; z-index: 20; display: none; }
+    #joystick-stick { position: absolute; top: 35px; left: 35px; width: 50px; height: 50px; background: rgba(255, 255, 255, 0.6); border-radius: 50%; pointer-events: none; }
   </style>
 </head>
 <body>
 
-  <!-- ================= ログイン画面 ================= -->
   <div id="login-screen">
     <div class="login-box">
       <h2>ソウルニア・オンライン</h2>
       <div class="input-group">
         <label>プレイヤー名</label>
-        <input type="text" id="input-name" placeholder="例: 冒険者ハルト" value="プレイヤー">
+        <input type="text" id="input-name" placeholder="例: プレイヤー1" value="">
       </div>
       <div class="input-group">
         <label>メールアドレス</label>
@@ -290,7 +70,6 @@
     </div>
   </div>
 
-  <!-- ================= ゲーム画面本体 ================= -->
   <div id="game-ui">
     <div id="header">
       <div class="header-row">
@@ -315,7 +94,6 @@
         <div id="joystick-stick"></div>
       </div>
 
-      <!-- 図鑑モーダル -->
       <div id="zukan-modal" class="modal">
         <div class="modal-header">
           <span>精霊図鑑 (発見: <span id="zukan-count">0</span> / 225)</span>
@@ -324,7 +102,6 @@
         <div id="zukan-list"></div>
       </div>
 
-      <!-- スキン変更モーダル -->
       <div id="skin-modal" class="modal">
         <div class="modal-header">
           <span>キャラクター・スキン変更</span>
@@ -350,11 +127,10 @@
   </div>
 
   <script>
-    let playerName = "プレイヤー";
+    let playerName = "プレイヤー1";
     let playerColor = 0x54a0ff;
     let isGameInitialized = false;
 
-    // --- キャッシュ（自動ログイン）チェック ---
     window.addEventListener('DOMContentLoaded', () => {
       const cachedUserData = localStorage.getItem('soulnia_user');
       if (cachedUserData) {
@@ -362,7 +138,6 @@
         playerName = user.name;
         playerColor = user.color;
 
-        // キャッシュがあればログイン画面を飛ばして即ゲームスタート
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('game-ui').style.display = 'flex';
         document.getElementById('display-name').innerText = playerName;
@@ -371,7 +146,6 @@
       }
     });
 
-    // 手動ログインボタン
     document.getElementById('start-game-btn').addEventListener('click', () => {
       const nameInput = document.getElementById('input-name').value.trim();
       const emailInput = document.getElementById('input-email').value.trim();
@@ -386,12 +160,7 @@
       if (nameInput) playerName = nameInput;
       playerColor = colorInput;
 
-      // キャッシュ（localStorage）にユーザー情報を保存
-      const userData = {
-        name: playerName,
-        email: emailInput,
-        color: playerColor
-      };
+      const userData = { name: playerName, email: emailInput, color: playerColor };
       localStorage.setItem('soulnia_user', JSON.stringify(userData));
 
       document.getElementById('login-screen').style.display = 'none';
@@ -401,11 +170,10 @@
       initGame();
     });
 
-    // ログアウトボタン（キャッシュ消去）
     document.getElementById('logout-btn').addEventListener('click', () => {
       if (confirm("ログアウトしますか？")) {
         localStorage.removeItem('soulnia_user');
-        location.reload(); // 画面リロードしてログイン画面に戻る
+        location.reload();
       }
     });
 
@@ -426,7 +194,6 @@
       playerColor = hex;
       updatePlayerColor(hex);
 
-      // キャッシュの色情報も更新
       const cachedUserData = localStorage.getItem('soulnia_user');
       if (cachedUserData) {
         const user = JSON.parse(cachedUserData);
@@ -437,8 +204,6 @@
       closeModal('skin-modal');
     }
 
-
-    // --- メインゲームスクリプト ---
     let scene, camera, renderer, player;
     let container;
 
@@ -455,70 +220,169 @@
       camera.lookAt(0, 0, 0);
 
       renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.shadowMap.enabled = true; // 影を有効化
       container.appendChild(renderer.domElement);
 
-      scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+      scene.add(new THREE.AmbientLight(0xffffff, 0.6));
       const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-      dirLight.position.set(5, 10, 5);
+      dirLight.position.set(5, 15, 5);
+      dirLight.castShadow = true;
       scene.add(dirLight);
 
-      // ステージ・建物
+      // 床
       const floor = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.MeshStandardMaterial({ color: 0x1f4068 }));
       floor.rotation.x = -Math.PI / 2;
+      floor.receiveShadow = true;
       scene.add(floor);
 
+      // 拠点
       const baseMesh = new THREE.Mesh(new THREE.BoxGeometry(4, 0.1, 4), new THREE.MeshStandardMaterial({ color: 0x4a90e2, transparent: true, opacity: 0.6 }));
       baseMesh.position.set(-5, 0.05, -5);
       scene.add(baseMesh);
 
+      // ジム
       const gymMesh = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 2), new THREE.MeshStandardMaterial({ color: 0xff9f43 }));
       gymMesh.position.set(-5, 0.1, -2);
       scene.add(gymMesh);
 
+      // 野生のソウル球体
       const soulMesh = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({ color: 0x00d2d3, emissive: 0x00d2d3 }));
       soulMesh.position.set(5, 0.5, 5);
       scene.add(soulMesh);
 
-      // プレイヤー生成
-      player = createRobloxCharacter(playerColor, 1);
+      // プレイヤー作成
+      player = createCutePlayerCharacter(playerColor);
       player.position.set(-5, 0, -5);
       scene.add(player);
 
       setupJoystick();
       animate();
+
+      setTimeout(() => {
+        if (container && renderer && camera) {
+          const w = container.clientWidth;
+          const h = container.clientHeight;
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+          renderer.setSize(w, h);
+        }
+      }, 50);
     }
 
-
-    // --- ブロックキャラ作成 ---
-    function createRobloxCharacter(colorHex, scale = 1) {
+    // ✨ クオリティアップした「プレイヤー（可愛いロブロックス風キャラ）」
+    function createCutePlayerCharacter(colorHex) {
       const group = new THREE.Group();
-      
-      const body = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 0.3), new THREE.MeshStandardMaterial({ color: colorHex }));
+
+      // 服の素材
+      const suitMat = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.3 });
+      const skinMat = new THREE.MeshStandardMaterial({ color: 0xffdbac, roughness: 0.5 });
+      const blackMat = new THREE.MeshStandardMaterial({ color: 0x222222 });
+      const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+
+      // 1. 胴体
+      const body = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 0.35), suitMat);
       body.position.y = 0.55;
+      body.castShadow = true;
       group.add(body);
 
-      const head = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.45, 0.45), new THREE.MeshStandardMaterial({ color: 0xffdbac }));
-      head.position.y = 1.15;
+      // 2. 頭（丸みを強調）
+      const head = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), skinMat);
+      head.position.y = 1.2;
+      head.castShadow = true;
       group.add(head);
 
-      const armMat = new THREE.MeshStandardMaterial({ color: colorHex });
-      const leftArm = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.6, 0.25), armMat);
-      leftArm.position.set(-0.45, 0.55, 0);
+      // 髪の毛（バイザー風帽子）
+      const hair = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.15, 0.52), blackMat);
+      hair.position.set(0, 1.42, 0);
+      group.add(hair);
+
+      // つぶらな目（左右）
+      const eyeGeo = new THREE.BoxGeometry(0.08, 0.1, 0.02);
+      const leftEye = new THREE.Mesh(eyeGeo, blackMat);
+      leftEye.position.set(-0.12, 1.22, 0.26);
+      group.add(leftEye);
+
+      const rightEye = new THREE.Mesh(eyeGeo, blackMat);
+      rightEye.position.set(0.12, 1.22, 0.26);
+      group.add(rightEye);
+
+      // 目のキラキラハイライト
+      const highlightGeo = new THREE.BoxGeometry(0.03, 0.03, 0.02);
+      const leftH = new THREE.Mesh(highlightGeo, whiteMat);
+      leftH.position.set(-0.1, 1.24, 0.27);
+      group.add(leftH);
+
+      const rightH = new THREE.Mesh(highlightGeo, whiteMat);
+      rightH.position.set(0.14, 1.24, 0.27);
+      group.add(rightH);
+
+      // ほっぺのチーク
+      const cheekMat = new THREE.MeshStandardMaterial({ color: 0xff7675 });
+      const cheekGeo = new THREE.BoxGeometry(0.08, 0.04, 0.02);
+      const leftCheek = new THREE.Mesh(cheekGeo, cheekMat);
+      leftCheek.position.set(-0.16, 1.14, 0.26);
+      group.add(leftCheek);
+
+      const rightCheek = new THREE.Mesh(cheekGeo, cheekMat);
+      rightCheek.position.set(0.16, 1.14, 0.26);
+      group.add(rightCheek);
+
+      // 3. 腕（左右）
+      const armGeo = new THREE.BoxGeometry(0.2, 0.6, 0.22);
+      const leftArm = new THREE.Mesh(armGeo, suitMat);
+      leftArm.position.set(-0.42, 0.55, 0);
       group.add(leftArm);
 
-      const rightArm = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.6, 0.25), armMat);
-      rightArm.position.set(0.45, 0.55, 0);
+      const rightArm = new THREE.Mesh(armGeo, suitMat);
+      rightArm.position.set(0.42, 0.55, 0);
       group.add(rightArm);
 
-      const legMat = new THREE.MeshStandardMaterial({ color: 0x222222 });
-      const leftLeg = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.5, 0.25), legMat);
-      leftLeg.position.set(-0.15, 0.25, 0);
+      // 4. 脚（左右）
+      const legGeo = new THREE.BoxGeometry(0.24, 0.5, 0.24);
+      const leftLeg = new THREE.Mesh(legGeo, blackMat);
+      leftLeg.position.set(-0.14, 0.25, 0);
       group.add(leftLeg);
 
-      const rightLeg = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.5, 0.25), legMat);
-      rightLeg.position.set(0.15, 0.25, 0);
+      const rightLeg = new THREE.Mesh(legGeo, blackMat);
+      rightLeg.position.set(0.14, 0.25, 0);
       group.add(rightLeg);
+
+      return group;
+    }
+
+    // ✨ 見た目が全く違う「精霊モンスター（ぷにぷにスライム風）」
+    function createSpiritMonster(colorHex, scale = 1) {
+      const group = new THREE.Group();
+      const mainMat = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.2, metalness: 0.1 });
+      const eyeMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+      const pupilMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
+
+      // 体（丸っこいスライム体型）
+      const body = new THREE.Mesh(new THREE.SphereGeometry(0.45, 16, 12), mainMat);
+      body.position.y = 0.4;
+      body.scale.set(1, 0.8, 1);
+      body.castShadow = true;
+      group.add(body);
+
+      // アンテナ（頭の上の光るポッチ）
+      const antennaStem = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.3), mainMat);
+      antennaStem.position.y = 0.8;
+      group.add(antennaStem);
+
+      const antennaOrb = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), new THREE.MeshStandardMaterial({ color: 0xffff00, emissive: 0xffff00 }));
+      antennaOrb.position.y = 0.95;
+      group.add(antennaOrb);
+
+      // 大きなひとつ目（または可愛いクリクリ目）
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.15, 12, 12), eyeMat);
+      eye.position.set(0, 0.45, 0.35);
+      group.add(eye);
+
+      const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), pupilMat);
+      pupil.position.set(0, 0.45, 0.47);
+      group.add(pupil);
 
       group.scale.set(scale, scale, scale);
       return group;
@@ -527,15 +391,17 @@
     function updatePlayerColor(colorHex) {
       if (player) {
         player.traverse((child) => {
-          if (child.isMesh && child.material.color && child.material.color.getHex() !== 0xffdbac && child.material.color.getHex() !== 0x222222) {
-            child.material.color.setHex(colorHex);
+          if (child.isMesh && child.material.color) {
+            const h = child.material.color.getHex();
+            // 肌色・黒・チーク・目以外（スーツの色）を更新
+            if (h !== 0xffdbac && h !== 0x222222 && h !== 0xff7675 && h !== 0xffffff && h !== 0x111111) {
+              child.material.color.setHex(colorHex);
+            }
           }
         });
       }
     }
 
-
-    // --- ジョイスティック ---
     let moveVector = { x: 0, z: 0 };
     let isTouching = false;
     let touchId = null;
@@ -587,8 +453,6 @@
       container.addEventListener('pointercancel', endTouch);
     }
 
-
-    // --- ゲームデータ・システム ---
     let money = 0;
     let speed = 0.08;
     let facilityLv = 1;
@@ -676,8 +540,6 @@
       document.getElementById('income').innerText = currentIncome;
     }
 
-
-    // --- メインアニメーションループ ---
     function animate() {
       requestAnimationFrame(animate);
 
@@ -692,7 +554,7 @@
         player.position.z = Math.max(-9, Math.min(9, player.position.z));
       }
 
-      const soulMesh = scene.children.find(c => c.geometry && c.geometry.type === 'SphereGeometry');
+      const soulMesh = scene.children.find(c => c.geometry && c.geometry.type === 'SphereGeometry' && c.material.emissive);
 
       if (soulActive && !hasSoul && soulMesh) {
         if (player.position.distanceTo(soulMesh.position) < 1.2) {
@@ -718,12 +580,13 @@
           const found = zukanMaster.find(item => item.key === spiritName);
           if (found) found.discovered = true;
 
-          const spiritMesh = createRobloxCharacter(spiritColor, sizeScale * 0.7);
+          // 拠点に精霊モンスター（スライム風）を生成
+          const spiritMesh = createSpiritMonster(spiritColor, sizeScale * 0.8);
           spiritMesh.position.set(-5 + (Math.random() - 0.5) * 2.5, 0, -5 + (Math.random() - 0.5) * 2.5);
           scene.add(spiritMesh);
 
           spirits.push({ mesh: spiritMesh, income: incomeVal });
-          showPopup(`✨ 【${rarity.name}】 ${spiritName}\n(サイズ: ${sizeScale}x) を図鑑に登録！`);
+          showPopup(`✨ 【${rarity.name}】 ${spiritName}\n(サイズ: ${sizeScale}x) を捕獲！`);
           updateUI();
 
           setTimeout(() => {
@@ -747,9 +610,11 @@
 
     window.addEventListener('resize', () => {
       if (container && renderer && camera) {
-        camera.aspect = container.clientWidth / container.clientHeight;
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        camera.aspect = w / h;
         camera.updateProjectionMatrix();
-        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setSize(w, h);
       }
     });
   </script>
