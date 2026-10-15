@@ -7,87 +7,80 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-    body { background-color: #1a1a2e; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; touch-action: none; }
+    body { background-color: #0b0c10; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; touch-action: none; }
     
     /* --- ログイン画面 --- */
-    #login-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0f3460, #16213e); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
-    .login-box { background: rgba(22, 33, 62, 0.95); border: 2px solid #e94560; border-radius: 15px; padding: 25px; width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
-    .login-box h2 { text-align: center; color: #e94560; font-size: 20px; margin-bottom: 5px; }
+    #login-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+    .login-box { background: rgba(15, 23, 42, 0.95); border: 2px solid #00d2d3; border-radius: 20px; padding: 25px; width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 10px 30px rgba(0,210,211,0.3); }
+    .login-box h2 { text-align: center; color: #00d2d3; font-size: 22px; margin-bottom: 5px; text-shadow: 0 0 10px rgba(0,210,211,0.5); }
     .input-group { display: flex; flex-direction: column; gap: 5px; font-size: 12px; }
-    .input-group input, .input-group select { padding: 10px; border-radius: 8px; border: 1px solid #444; background: #0f3460; color: white; font-size: 14px; }
-    #start-game-btn { padding: 12px; background: #e94560; color: white; border: none; border-radius: 20px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); margin-top: 10px; }
+    .input-group input, .input-group select { padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; font-size: 14px; }
+    #start-game-btn { padding: 12px; background: linear-gradient(45deg, #ff416c, #ff4b2b); color: white; border: none; border-radius: 20px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(255,65,108,0.4); margin-top: 10px; }
 
     /* --- ゲーム内UI --- */
     #game-ui { display: none; flex-direction: column; height: 100vh; width: 100vw; }
     
-    /* 上部ヘッダー（スマホで崩れないように調整） */
     #header {
-      background: #16213e;
+      background: #0f172a;
       display: flex;
       flex-direction: column;
-      padding: 6px 10px;
+      padding: 8px 12px;
       font-size: 11px;
       font-weight: bold;
-      border-bottom: 2px solid #0f3460;
-      z-index: 10;
+      border-bottom: 2px solid #1e293b;
+      z-index: 20;
       gap: 4px;
+      flex-shrink: 0;
     }
     .header-row { display: flex; width: 100%; justify-content: space-between; align-items: center; }
 
-    #game-container { flex: 1; position: relative; background: #0f3460; width: 100%; overflow: hidden; }
-    canvas { width: 100% !important; height: 100% !important; display: block; }
-
-    #ad-container { height: 50px; background-color: #222; display: flex; justify-content: center; align-items: center; color: #888; font-size: 11px; border-top: 1px solid #444; z-index: 10; flex-shrink: 0; }
-
-    /* 操作・メニューボタン群（スマホでもスッキリ収まる配置） */
     #menu-bar {
-      position: absolute;
-      top: 10px;
-      left: 0;
-      width: 100%;
+      background: #1e293b;
       display: flex;
       justify-content: space-around;
-      padding: 0 10px;
-      z-index: 10;
-      pointer-events: none; /* ボタン以外はタッチを透過 */
+      padding: 6px 10px;
+      border-bottom: 1px solid #334155;
+      z-index: 20;
+      flex-shrink: 0;
     }
     .top-btn {
-      pointer-events: auto;
-      padding: 6px 10px;
-      background: #e94560;
+      padding: 6px 12px;
       color: white;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       font-weight: bold;
-      font-size: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      font-size: 11px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
       cursor: pointer;
     }
-    #upgrade-btn { background: #e94560; }
-    #skin-btn { background: #3498db; }
-    #logout-btn { background: #6c5ce7; }
-    #zukan-btn { background: #00b894; }
+    #upgrade-btn { background: #ff4757; }
+    #skin-btn { background: #2ed573; }
+    #zukan-btn { background: #1e90ff; }
+    #logout-btn { background: #57606f; }
 
-    /* モーダル共通 */
+    #game-container { flex: 1; position: relative; background: #0b0c10; width: 100%; overflow: hidden; }
+    canvas { width: 100% !important; height: 100% !important; display: block; }
+
+    #ad-container { height: 50px; background-color: #111; display: flex; justify-content: center; align-items: center; color: #666; font-size: 11px; border-top: 1px solid #222; z-index: 20; flex-shrink: 0; }
+
     .modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); z-index: 50; display: none; flex-direction: column; padding: 20px; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid #1f4068; padding-bottom: 10px; }
-    .close-btn { background: #e94560; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; }
+    .close-btn { background: #ff4757; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; }
     #zukan-list { flex: 1; overflow-y: auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding-bottom: 20px; }
-    .zukan-item { background: #16213e; border: 1px solid #1f4068; border-radius: 8px; padding: 10px; font-size: 11px; }
+    .zukan-item { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 10px; font-size: 11px; }
     .zukan-item.locked { opacity: 0.4; }
     .skin-picker-container { display: flex; flex-direction: column; gap: 15px; font-size: 14px; }
     .color-presets { display: flex; gap: 10px; }
     .color-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; }
 
-    #popup { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.85); color: #00d2d3; padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: bold; display: none; z-index: 15; text-align: center; pointer-events: none; border: 1px solid #00d2d3; }
+    #popup { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.9); color: #00d2d3; padding: 10px 16px; border-radius: 12px; font-size: 12px; font-weight: bold; display: none; z-index: 30; text-align: center; pointer-events: none; border: 1px solid #00d2d3; box-shadow: 0 0 15px rgba(0,210,211,0.5); }
 
-    #joystick-base { position: absolute; bottom: 30px; left: 30px; width: 110px; height: 110px; background: rgba(255, 255, 255, 0.15); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; z-index: 20; display: none; }
-    #joystick-stick { position: absolute; top: 30px; left: 30px; width: 50px; height: 50px; background: rgba(255, 255, 255, 0.6); border-radius: 50%; pointer-events: none; }
+    #joystick-base { position: absolute; bottom: 30px; left: 30px; width: 110px; height: 110px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.25); border-radius: 50%; z-index: 20; display: none; backdrop-filter: blur(4px); }
+    #joystick-stick { position: absolute; top: 30px; left: 30px; width: 50px; height: 50px; background: rgba(0, 210, 211, 0.7); border-radius: 50%; pointer-events: none; box-shadow: 0 0 10px rgba(0,210,211,0.8); }
   </style>
 </head>
 <body>
 
-  <!-- ログイン画面 -->
   <div id="login-screen">
     <div class="login-box">
       <h2>ソウルニア・オンライン</h2>
@@ -117,7 +110,6 @@
     </div>
   </div>
 
-  <!-- ゲーム画面本体 -->
   <div id="game-ui">
     <div id="header">
       <div class="header-row">
@@ -132,21 +124,19 @@
       </div>
     </div>
 
-    <div id="game-container">
-      <!-- 上部メニューバー（ボタンの重なりを解消） -->
-      <div id="menu-bar">
-        <button id="upgrade-btn" class="top-btn">強化(<span id="cost">50</span>G)</button>
-        <button id="skin-btn" class="top-btn">👕 スキン</button>
-        <button id="logout-btn" class="top-btn">🚪 退出</button>
-        <button id="zukan-btn" class="top-btn">📖 図鑑</button>
-      </div>
+    <div id="menu-bar">
+      <button id="upgrade-btn" class="top-btn">強化(<span id="cost">50</span>G)</button>
+      <button id="skin-btn" class="top-btn">👕 スキン</button>
+      <button id="zukan-btn" class="top-btn">📖 図鑑</button>
+      <button id="logout-btn" class="top-btn">🚪 退出</button>
+    </div>
 
+    <div id="game-container">
       <div id="popup"></div>
       <div id="joystick-base">
         <div id="joystick-stick"></div>
       </div>
 
-      <!-- 図鑑モーダル -->
       <div id="zukan-modal" class="modal">
         <div class="modal-header">
           <span>精霊図鑑 (発見: <span id="zukan-count">0</span> / 225)</span>
@@ -155,7 +145,6 @@
         <div id="zukan-list"></div>
       </div>
 
-      <!-- スキン変更モーダル -->
       <div id="skin-modal" class="modal">
         <div class="modal-header">
           <span>キャラクター・スキン変更</span>
@@ -168,7 +157,6 @@
             <div class="color-btn" style="background:#ff6b6b;" onclick="changePlayerColor(0xff6b6b)"></div>
             <div class="color-btn" style="background:#1dd1a1;" onclick="changePlayerColor(0x1dd1a1)"></div>
             <div class="color-btn" style="background:#feca57;" onclick="changePlayerColor(0xfeca57)"></div>
-            <div class="color-btn" style="background:#9b59b6;" onclick="changePlayerColor(0x9b59b6)"></div>
             <div class="color-btn" style="background:#ffffff;" onclick="changePlayerColor(0xffffff)"></div>
           </div>
         </div>
@@ -260,6 +248,8 @@
 
     let scene, camera, renderer, player;
     let container;
+    let magicRing, soulMesh;
+    let playerAnimTime = 0;
 
     function initGame() {
       if (isGameInitialized) return;
@@ -267,7 +257,8 @@
 
       container = document.getElementById('game-container');
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0f3460);
+      scene.background = new THREE.Color(0x0a1128);
+      scene.fog = new THREE.FogExp2(0x0a1128, 0.03); // 幻想的な霧
 
       camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
 
@@ -275,38 +266,200 @@
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(container.clientWidth, container.clientHeight);
       renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       container.appendChild(renderer.domElement);
 
-      scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+      // 環境光＆複数のライティング
+      scene.add(new THREE.AmbientLight(0xdfe6e9, 0.4));
+      
       const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-      dirLight.position.set(5, 15, 5);
+      dirLight.position.set(10, 20, 10);
       dirLight.castShadow = true;
+      dirLight.shadow.mapSize.width = 1024;
+      dirLight.shadow.mapSize.height = 1024;
       scene.add(dirLight);
 
-      // 床
-      const floor = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.MeshStandardMaterial({ color: 0x1f4068 }));
+      // 拠点の温かい明かり（ポイントライト）
+      const houseLight = new THREE.PointLight(0xffa502, 1.2, 10);
+      houseLight.position.set(-7, 2, 6.5);
+      scene.add(houseLight);
+
+      // 祭壇の紫の怪しい明かり
+      const altarLight = new THREE.PointLight(0xa55eea, 2, 12);
+      altarLight.position.set(7, 2, -5);
+      scene.add(altarLight);
+
+      // --- 20倍超豪華3Dフィールド ---
+      const floor = new THREE.Mesh(
+        new THREE.PlaneGeometry(32, 32),
+        new THREE.MeshStandardMaterial({ color: 0x1e272e, roughness: 0.8 })
+      );
       floor.rotation.x = -Math.PI / 2;
       floor.receiveShadow = true;
       scene.add(floor);
 
-      // 拠点
-      const baseMesh = new THREE.Mesh(new THREE.BoxGeometry(4, 0.1, 4), new THREE.MeshStandardMaterial({ color: 0x4a90e2, transparent: true, opacity: 0.6 }));
-      baseMesh.position.set(-5, 0.05, -5);
-      scene.add(baseMesh);
 
-      // ジム
-      const gymMesh = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 2), new THREE.MeshStandardMaterial({ color: 0xff9f43 }));
-      gymMesh.position.set(-5, 0.1, -2);
-      scene.add(gymMesh);
+      // 1. 【🏠 マイホーム（超豪華版）】
+      const houseGroup = new THREE.Group();
+      
+      // 土台・ウッドデッキ
+      const deck = new THREE.Mesh(new THREE.BoxGeometry(6, 0.2, 6), new THREE.MeshStandardMaterial({ color: 0x8f543d }));
+      deck.position.y = 0.1;
+      deck.receiveShadow = true;
+      houseGroup.add(deck);
 
-      // 野生のソウル球体
-      const soulMesh = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({ color: 0x00d2d3, emissive: 0x00d2d3 }));
-      soulMesh.position.set(5, 0.5, 5);
+      // 家の壁
+      const houseBody = new THREE.Mesh(new THREE.BoxGeometry(3.5, 2.5, 3.5), new THREE.MeshStandardMaterial({ color: 0xf5cd79 }));
+      houseBody.position.y = 1.35;
+      houseBody.castShadow = true;
+      houseGroup.add(houseBody);
+
+      // 屋根（庇付き三角屋根）
+      const roof = new THREE.Mesh(new THREE.ConeGeometry(3.0, 1.5, 4), new THREE.MeshStandardMaterial({ color: 0xb33939 }));
+      roof.position.y = 3.25;
+      roof.rotation.y = Math.PI / 4;
+      roof.castShadow = true;
+      houseGroup.add(roof);
+
+      // レンガの煙突
+      const chimney = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.2, 0.5), new THREE.MeshStandardMaterial({ color: 0x574b90 }));
+      chimney.position.set(1.0, 3.2, -0.8);
+      chimney.castShadow = true;
+      houseGroup.add(chimney);
+
+      // 光る窓
+      const windowMat = new THREE.MeshStandardMaterial({ color: 0xf8a5c2, emissive: 0xf8a5c2, emissiveIntensity: 0.8 });
+      const win1 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 0.1), windowMat);
+      win1.position.set(-1.0, 1.6, 1.76);
+      houseGroup.add(win1);
+
+      // ドア（木のドア＋ノブ）
+      const door = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.5, 0.1), new THREE.MeshStandardMaterial({ color: 0x546de5 }));
+      door.position.set(0.6, 0.85, 1.76);
+      houseGroup.add(door);
+
+      // 庭の木々（2本）
+      function createTree(x, z) {
+        const tree = new THREE.Group();
+        const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.2, 1.2), new THREE.MeshStandardMaterial({ color: 0x775441 }));
+        trunk.position.y = 0.6;
+        tree.add(trunk);
+        const leaves = new THREE.Mesh(new THREE.DodecahedronGeometry(0.9, 1), new THREE.MeshStandardMaterial({ color: 0x2ed573, roughness: 0.6 }));
+        leaves.position.y = 1.6;
+        leaves.castShadow = true;
+        tree.add(leaves);
+        tree.position.set(x, 0, z);
+        return tree;
+      }
+      houseGroup.add(createTree(-2.2, 2.2));
+      houseGroup.add(createTree(2.2, -2.2));
+
+      houseGroup.position.set(-7, 0, 6);
+      scene.add(houseGroup);
+
+
+      // 2. 【🏋️‍♂️ サイバー特訓ジム】
+      const gymGroup = new THREE.Group();
+      
+      // ジムマット
+      const gymFloor = new THREE.Mesh(new THREE.BoxGeometry(5.5, 0.15, 4.5), new THREE.MeshStandardMaterial({ color: 0x2f3542 }));
+      gymFloor.position.y = 0.08;
+      gymFloor.receiveShadow = true;
+      gymGroup.add(gymFloor);
+
+      // トレッドミル（最新型）
+      const treadmill = new THREE.Group();
+      const tmBase = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.2, 2.2), new THREE.MeshStandardMaterial({ color: 0x57606f }));
+      tmBase.position.y = 0.1;
+      treadmill.add(tmBase);
+      
+      const tmScreen = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.8, 0.1), new THREE.MeshStandardMaterial({ color: 0x00d2d3, emissive: 0x00d2d3, emissiveIntensity: 0.5 }));
+      tmScreen.position.set(0, 1.0, -1.0);
+      treadmill.add(tmScreen);
+      treadmill.position.set(-1.5, 0, 0);
+      gymGroup.add(treadmill);
+
+      // 本格ベンチプレス＆バーベル
+      const bench = new THREE.Group();
+      const benchBase = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.3, 2.0), new THREE.MeshStandardMaterial({ color: 0xff4757 }));
+      benchBase.position.y = 0.25;
+      bench.add(benchBase);
+
+      const barbellBar = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.2), new THREE.MeshStandardMaterial({ color: 0xdcdde1, metalness: 0.8 }));
+      barbellBar.rotation.z = Math.PI / 2;
+      barbellBar.position.set(0, 1.1, 0);
+      bench.add(barbellBar);
+
+      // 重りプレート（左右2個ずつ）
+      const weightGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.1, 16);
+      const weightMat = new THREE.MeshStandardMaterial({ color: 0x2f3542 });
+      const w1 = new THREE.Mesh(weightGeo, weightMat);
+      w1.rotation.z = Math.PI / 2;
+      w1.position.set(-0.9, 1.1, 0);
+      bench.add(w1);
+
+      const w2 = new THREE.Mesh(weightGeo, weightMat);
+      w2.rotation.z = Math.PI / 2;
+      w2.position.set(0.9, 1.1, 0);
+      bench.add(w2);
+
+      bench.position.set(1.2, 0, 0);
+      gymGroup.add(bench);
+
+      gymGroup.position.set(-7, 0, -1);
+      scene.add(gymGroup);
+
+
+      // 3. 【🔮 捕獲の古代遺跡（魔法陣エフェクト）】
+      const altarGroup = new THREE.Group();
+
+      // 台座
+      const altarBase = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 4.0, 0.4, 16), new THREE.MeshStandardMaterial({ color: 0x485460 }));
+      altarBase.position.y = 0.2;
+      altarGroup.add(altarBase);
+
+      // 光る回転魔法陣リング
+      magicRing = new THREE.Mesh(
+        new THREE.RingGeometry(1.8, 2.3, 32),
+        new THREE.MeshStandardMaterial({ color: 0xa55eea, emissive: 0xa55eea, side: THREE.DoubleSide })
+      );
+      magicRing.rotation.x = -Math.PI / 2;
+      magicRing.position.y = 0.42;
+      altarGroup.add(magicRing);
+
+      // 古代遺跡の刻印ピラー（4本）
+      const pillarGeo = new THREE.CylinderGeometry(0.35, 0.45, 3.0, 8);
+      const pillarMat = new THREE.MeshStandardMaterial({ color: 0x808e9b, roughness: 0.9 });
+      [[-2.4, -2.4], [2.4, -2.4], [-2.4, 2.4], [2.4, 2.4]].forEach(pos => {
+        const pGroup = new THREE.Group();
+        const pillar = new THREE.Mesh(pillarGeo, pillarMat);
+        pillar.position.y = 1.5;
+        pillar.castShadow = true;
+        pGroup.add(pillar);
+
+        // 柱の上の光る宝珠
+        const orb = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 8), new THREE.MeshStandardMaterial({ color: 0x00d2d3, emissive: 0x00d2d3 }));
+        orb.position.y = 3.2;
+        pGroup.add(orb);
+
+        pGroup.position.set(pos[0], 0, pos[1]);
+        altarGroup.add(pGroup);
+      });
+
+      altarGroup.position.set(7, 0, -5);
+      scene.add(altarGroup);
+
+      // 捕獲ターゲット（浮遊する神秘のソウル）
+      soulMesh = new THREE.Mesh(
+        new THREE.OctahedronGeometry(0.6, 0),
+        new THREE.MeshStandardMaterial({ color: 0x00d2d3, emissive: 0x00d2d3, emissiveIntensity: 0.8, wireframe: false })
+      );
+      soulMesh.position.set(7, 1.8, -5);
       scene.add(soulMesh);
 
-      // プレイヤー作成
+      // プレイヤー初期位置
       player = createCutePlayerCharacter(playerColor);
-      player.position.set(-5, 0, -5);
+      player.position.set(-7, 0, 3.5);
       scene.add(player);
 
       setupJoystick();
@@ -323,12 +476,12 @@
       }, 50);
     }
 
-    // プレイヤー（可愛いロブロックス風キャラ）
+    // 🚶‍♂️ アニメーション対応プレイヤーキャラクター
     function createCutePlayerCharacter(colorHex) {
       const group = new THREE.Group();
       const suitMat = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.3 });
       const skinMat = new THREE.MeshStandardMaterial({ color: 0xffdbac, roughness: 0.5 });
-      const blackMat = new THREE.MeshStandardMaterial({ color: 0x222222 });
+      const blackMat = new THREE.MeshStandardMaterial({ color: 0x1e272e });
       const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
 
       const body = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 0.35), suitMat);
@@ -373,28 +526,34 @@
       rightCheek.position.set(0.16, 1.14, 0.26);
       group.add(rightCheek);
 
+      // 腕（アニメーション用に独立グループ化）
       const armGeo = new THREE.BoxGeometry(0.2, 0.6, 0.22);
       const leftArm = new THREE.Mesh(armGeo, suitMat);
       leftArm.position.set(-0.42, 0.55, 0);
+      leftArm.name = "leftArm";
       group.add(leftArm);
 
       const rightArm = new THREE.Mesh(armGeo, suitMat);
       rightArm.position.set(0.42, 0.55, 0);
+      rightArm.name = "rightArm";
       group.add(rightArm);
 
+      // 脚（アニメーション用に独立グループ化）
       const legGeo = new THREE.BoxGeometry(0.24, 0.5, 0.24);
       const leftLeg = new THREE.Mesh(legGeo, blackMat);
       leftLeg.position.set(-0.14, 0.25, 0);
+      leftLeg.name = "leftLeg";
       group.add(leftLeg);
 
       const rightLeg = new THREE.Mesh(legGeo, blackMat);
       rightLeg.position.set(0.14, 0.25, 0);
+      rightLeg.name = "rightLeg";
       group.add(rightLeg);
 
       return group;
     }
 
-    // 精霊モンスター（スライム風）
+    // 精霊スライムモンスター
     function createSpiritMonster(colorHex, scale = 1) {
       const group = new THREE.Group();
       const mainMat = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.2, metalness: 0.1 });
@@ -432,7 +591,7 @@
         player.traverse((child) => {
           if (child.isMesh && child.material.color) {
             const h = child.material.color.getHex();
-            if (h !== 0xffdbac && h !== 0x222222 && h !== 0xff7675 && h !== 0xffffff && h !== 0x111111) {
+            if (h !== 0xffdbac && h !== 0x1e272e && h !== 0xff7675 && h !== 0xffffff && h !== 0x111111) {
               child.material.color.setHex(colorHex);
             }
           }
@@ -578,9 +737,13 @@
       document.getElementById('income').innerText = currentIncome;
     }
 
+    // メインアニメーションループ
     function animate() {
       requestAnimationFrame(animate);
 
+      const time = Date.now() * 0.003;
+
+      // 1. 移動＆歩行アニメーション
       if (moveVector.x !== 0 || moveVector.z !== 0) {
         const vx = moveVector.x * speed;
         const vz = moveVector.z * speed;
@@ -588,29 +751,69 @@
         player.position.z += vz;
         player.rotation.y = Math.atan2(vx, vz);
         
-        player.position.x = Math.max(-9, Math.min(9, player.position.x));
-        player.position.z = Math.max(-9, Math.min(9, player.position.z));
+        player.position.x = Math.max(-14, Math.min(14, player.position.x));
+        player.position.z = Math.max(-14, Math.min(14, player.position.z));
+
+        // 手足振り歩行アニメーション
+        playerAnimTime += 0.2;
+        const lArm = player.getObjectByName("leftArm");
+        const rArm = player.getObjectByName("rightArm");
+        const lLeg = player.getObjectByName("leftLeg");
+        const rLeg = player.getObjectByName("rightLeg");
+
+        if (lArm && rArm && lLeg && rLeg) {
+          lArm.rotation.x = Math.sin(playerAnimTime) * 0.6;
+          rArm.rotation.x = -Math.sin(playerAnimTime) * 0.6;
+          lLeg.rotation.x = -Math.sin(playerAnimTime) * 0.6;
+          rLeg.rotation.x = Math.sin(playerAnimTime) * 0.6;
+        }
+      } else {
+        // 停止時は手足をリセット
+        const lArm = player.getObjectByName("leftArm");
+        const rArm = player.getObjectByName("rightArm");
+        const lLeg = player.getObjectByName("leftLeg");
+        const rLeg = player.getObjectByName("rightLeg");
+        if (lArm && rArm && lLeg && rLeg) {
+          lArm.rotation.x = 0; rArm.rotation.x = 0;
+          lLeg.rotation.x = 0; rLeg.rotation.x = 0;
+        }
       }
 
-      // ✨ カメラがプレイヤーを追いかけるように追従処理を追加！
+      // 2. 魔法陣回転 ＆ ソウル浮遊回転アニメーション
+      if (magicRing) magicRing.rotation.z += 0.01;
+      if (soulMesh && soulActive) {
+        soulMesh.rotation.y += 0.02;
+        soulMesh.rotation.x += 0.01;
+        soulMesh.position.y = 1.8 + Math.sin(time * 2) * 0.3; // ふわふわ上下浮遊
+      }
+
+      // 3. 拠点の精霊たちが跳ねるアニメーション
+      spirits.forEach((s, idx) => {
+        if (s.mesh) {
+          s.mesh.position.y = Math.abs(Math.sin(time * 3 + idx)) * 0.3; // ピョンピョン跳ねる
+        }
+      });
+
+      // 4. 滑らかなカメラ追従
       camera.position.x += (player.position.x - camera.position.x) * 0.1;
-      camera.position.y = 11; // 高さを固定
-      camera.position.z += ((player.position.z + 9) - camera.position.z) * 0.1; // プレイヤーの後ろ斜め上から追う
+      camera.position.y = 13;
+      camera.position.z += ((player.position.z + 9.5) - camera.position.z) * 0.1;
       camera.lookAt(player.position.x, player.position.y + 0.5, player.position.z);
 
-      const soulMesh = scene.children.find(c => c.geometry && c.geometry.type === 'SphereGeometry' && c.material.emissive);
-
+      // --- ゲーム判定 ---
+      // 判定1：ソウル回収
       if (soulActive && !hasSoul && soulMesh) {
-        if (player.position.distanceTo(soulMesh.position) < 1.2) {
+        if (player.position.distanceTo(soulMesh.position) < 1.6) {
           hasSoul = true;
           soulMesh.visible = false;
           soulActive = false;
         }
       }
 
+      // 判定2：マイホーム拠点に帰還
       if (hasSoul) {
-        if (player.position.x > -7 && player.position.x < -3 &&
-            player.position.z > -7 && player.position.z < -3) {
+        if (player.position.x > -10 && player.position.x < -4 &&
+            player.position.z > 3 && player.position.z < 9) {
           hasSoul = false;
 
           const p = prefixes[Math.floor(Math.random() * prefixes.length)];
@@ -625,7 +828,7 @@
           if (found) found.discovered = true;
 
           const spiritMesh = createSpiritMonster(spiritColor, sizeScale * 0.8);
-          spiritMesh.position.set(-5 + (Math.random() - 0.5) * 2.5, 0, -5 + (Math.random() - 0.5) * 2.5);
+          spiritMesh.position.set(-7 + (Math.random() - 0.5) * 3, 0, 6 + (Math.random() - 0.5) * 2);
           scene.add(spiritMesh);
 
           spirits.push({ mesh: spiritMesh, income: incomeVal });
@@ -634,7 +837,7 @@
 
           setTimeout(() => {
             if (soulMesh) {
-              soulMesh.position.set((Math.random() - 0.5) * 8 + 4, 0.5, (Math.random() - 0.5) * 8 + 4);
+              soulMesh.position.set(7, 1.8, -5);
               soulMesh.visible = true;
               soulActive = true;
             }
@@ -642,8 +845,9 @@
         }
       }
 
-      if (player.position.x > -6 && player.position.x < -4 &&
-          player.position.z > -3 && player.position.z < -1) {
+      // 判定3：サイバージムでトレーニング
+      if (player.position.x > -9.5 && player.position.x < -4.5 &&
+          player.position.z > -3 && player.position.z < 1) {
         speed += 0.0005 * facilityLv;
         updateUI();
       }
