@@ -8,23 +8,67 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body { background-color: #1a1a2e; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; touch-action: none; }
+    
+    /* --- ログイン画面 --- */
     #login-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0f3460, #16213e); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
-    .login-box { background: rgba(22, 33, 62, 0.9); border: 2px solid #e94560; border-radius: 15px; padding: 25px; width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+    .login-box { background: rgba(22, 33, 62, 0.95); border: 2px solid #e94560; border-radius: 15px; padding: 25px; width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
     .login-box h2 { text-align: center; color: #e94560; font-size: 20px; margin-bottom: 5px; }
     .input-group { display: flex; flex-direction: column; gap: 5px; font-size: 12px; }
     .input-group input, .input-group select { padding: 10px; border-radius: 8px; border: 1px solid #444; background: #0f3460; color: white; font-size: 14px; }
     #start-game-btn { padding: 12px; background: #e94560; color: white; border: none; border-radius: 20px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); margin-top: 10px; }
+
+    /* --- ゲーム内UI --- */
     #game-ui { display: none; flex-direction: column; height: 100vh; width: 100vw; }
-    #header { height: 70px; background: #16213e; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 12px; font-weight: bold; border-bottom: 2px solid #0f3460; z-index: 10; gap: 3px; }
-    .header-row { display: flex; width: 100%; justify-content: space-around; align-items: center; }
+    
+    /* 上部ヘッダー（スマホで崩れないように調整） */
+    #header {
+      background: #16213e;
+      display: flex;
+      flex-direction: column;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: bold;
+      border-bottom: 2px solid #0f3460;
+      z-index: 10;
+      gap: 4px;
+    }
+    .header-row { display: flex; width: 100%; justify-content: space-between; align-items: center; }
+
     #game-container { flex: 1; position: relative; background: #0f3460; width: 100%; overflow: hidden; }
     canvas { width: 100% !important; height: 100% !important; display: block; }
-    #ad-container { height: 60px; background-color: #222; display: flex; justify-content: center; align-items: center; color: #888; font-size: 12px; border-top: 1px solid #444; z-index: 10; }
-    .top-btn { position: absolute; top: 12px; padding: 6px 10px; background: #e94560; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); cursor: pointer; z-index: 10; }
-    #upgrade-btn { left: 8px; }
-    #skin-btn { left: 110px; background: #3498db; }
-    #zukan-btn { right: 8px; background: #00b894; }
-    #logout-btn { right: 80px; background: #6c5ce7; }
+
+    #ad-container { height: 50px; background-color: #222; display: flex; justify-content: center; align-items: center; color: #888; font-size: 11px; border-top: 1px solid #444; z-index: 10; flex-shrink: 0; }
+
+    /* 操作・メニューボタン群（スマホでもスッキリ収まる配置） */
+    #menu-bar {
+      position: absolute;
+      top: 10px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      padding: 0 10px;
+      z-index: 10;
+      pointer-events: none; /* ボタン以外はタッチを透過 */
+    }
+    .top-btn {
+      pointer-events: auto;
+      padding: 6px 10px;
+      background: #e94560;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      cursor: pointer;
+    }
+    #upgrade-btn { background: #e94560; }
+    #skin-btn { background: #3498db; }
+    #logout-btn { background: #6c5ce7; }
+    #zukan-btn { background: #00b894; }
+
+    /* モーダル共通 */
     .modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); z-index: 50; display: none; flex-direction: column; padding: 20px; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid #1f4068; padding-bottom: 10px; }
     .close-btn { background: #e94560; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; }
@@ -34,13 +78,16 @@
     .skin-picker-container { display: flex; flex-direction: column; gap: 15px; font-size: 14px; }
     .color-presets { display: flex; gap: 10px; }
     .color-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; }
-    #popup { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.85); color: #00d2d3; padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: bold; display: none; z-index: 15; text-align: center; pointer-events: none; border: 1px solid #00d2d3; }
-    #joystick-base { position: absolute; bottom: 40px; left: 40px; width: 120px; height: 120px; background: rgba(255, 255, 255, 0.15); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; z-index: 20; display: none; }
-    #joystick-stick { position: absolute; top: 35px; left: 35px; width: 50px; height: 50px; background: rgba(255, 255, 255, 0.6); border-radius: 50%; pointer-events: none; }
+
+    #popup { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.85); color: #00d2d3; padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: bold; display: none; z-index: 15; text-align: center; pointer-events: none; border: 1px solid #00d2d3; }
+
+    #joystick-base { position: absolute; bottom: 30px; left: 30px; width: 110px; height: 110px; background: rgba(255, 255, 255, 0.15); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; z-index: 20; display: none; }
+    #joystick-stick { position: absolute; top: 30px; left: 30px; width: 50px; height: 50px; background: rgba(255, 255, 255, 0.6); border-radius: 50%; pointer-events: none; }
   </style>
 </head>
 <body>
 
+  <!-- ログイン画面 -->
   <div id="login-screen">
     <div class="login-box">
       <h2>ソウルニア・オンライン</h2>
@@ -70,6 +117,7 @@
     </div>
   </div>
 
+  <!-- ゲーム画面本体 -->
   <div id="game-ui">
     <div id="header">
       <div class="header-row">
@@ -85,15 +133,20 @@
     </div>
 
     <div id="game-container">
-      <button id="upgrade-btn" class="top-btn">マシン強化 (<span id="cost">50</span>G)</button>
-      <button id="skin-btn" class="top-btn">👕 スキン</button>
-      <button id="logout-btn" class="top-btn">🚪 退出</button>
-      <button id="zukan-btn" class="top-btn">📖 図鑑</button>
+      <!-- 上部メニューバー（ボタンの重なりを解消） -->
+      <div id="menu-bar">
+        <button id="upgrade-btn" class="top-btn">強化(<span id="cost">50</span>G)</button>
+        <button id="skin-btn" class="top-btn">👕 スキン</button>
+        <button id="logout-btn" class="top-btn">🚪 退出</button>
+        <button id="zukan-btn" class="top-btn">📖 図鑑</button>
+      </div>
+
       <div id="popup"></div>
       <div id="joystick-base">
         <div id="joystick-stick"></div>
       </div>
 
+      <!-- 図鑑モーダル -->
       <div id="zukan-modal" class="modal">
         <div class="modal-header">
           <span>精霊図鑑 (発見: <span id="zukan-count">0</span> / 225)</span>
@@ -102,6 +155,7 @@
         <div id="zukan-list"></div>
       </div>
 
+      <!-- スキン変更モーダル -->
       <div id="skin-modal" class="modal">
         <div class="modal-header">
           <span>キャラクター・スキン変更</span>
@@ -216,13 +270,11 @@
       scene.background = new THREE.Color(0x0f3460);
 
       camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-      camera.position.set(0, 14, 12);
-      camera.lookAt(0, 0, 0);
 
       renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(container.clientWidth, container.clientHeight);
-      renderer.shadowMap.enabled = true; // 影を有効化
+      renderer.shadowMap.enabled = true;
       container.appendChild(renderer.domElement);
 
       scene.add(new THREE.AmbientLight(0xffffff, 0.6));
@@ -271,34 +323,28 @@
       }, 50);
     }
 
-    // ✨ クオリティアップした「プレイヤー（可愛いロブロックス風キャラ）」
+    // プレイヤー（可愛いロブロックス風キャラ）
     function createCutePlayerCharacter(colorHex) {
       const group = new THREE.Group();
-
-      // 服の素材
       const suitMat = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.3 });
       const skinMat = new THREE.MeshStandardMaterial({ color: 0xffdbac, roughness: 0.5 });
       const blackMat = new THREE.MeshStandardMaterial({ color: 0x222222 });
       const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
 
-      // 1. 胴体
       const body = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 0.35), suitMat);
       body.position.y = 0.55;
       body.castShadow = true;
       group.add(body);
 
-      // 2. 頭（丸みを強調）
       const head = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), skinMat);
       head.position.y = 1.2;
       head.castShadow = true;
       group.add(head);
 
-      // 髪の毛（バイザー風帽子）
       const hair = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.15, 0.52), blackMat);
       hair.position.set(0, 1.42, 0);
       group.add(hair);
 
-      // つぶらな目（左右）
       const eyeGeo = new THREE.BoxGeometry(0.08, 0.1, 0.02);
       const leftEye = new THREE.Mesh(eyeGeo, blackMat);
       leftEye.position.set(-0.12, 1.22, 0.26);
@@ -308,7 +354,6 @@
       rightEye.position.set(0.12, 1.22, 0.26);
       group.add(rightEye);
 
-      // 目のキラキラハイライト
       const highlightGeo = new THREE.BoxGeometry(0.03, 0.03, 0.02);
       const leftH = new THREE.Mesh(highlightGeo, whiteMat);
       leftH.position.set(-0.1, 1.24, 0.27);
@@ -318,7 +363,6 @@
       rightH.position.set(0.14, 1.24, 0.27);
       group.add(rightH);
 
-      // ほっぺのチーク
       const cheekMat = new THREE.MeshStandardMaterial({ color: 0xff7675 });
       const cheekGeo = new THREE.BoxGeometry(0.08, 0.04, 0.02);
       const leftCheek = new THREE.Mesh(cheekGeo, cheekMat);
@@ -329,7 +373,6 @@
       rightCheek.position.set(0.16, 1.14, 0.26);
       group.add(rightCheek);
 
-      // 3. 腕（左右）
       const armGeo = new THREE.BoxGeometry(0.2, 0.6, 0.22);
       const leftArm = new THREE.Mesh(armGeo, suitMat);
       leftArm.position.set(-0.42, 0.55, 0);
@@ -339,7 +382,6 @@
       rightArm.position.set(0.42, 0.55, 0);
       group.add(rightArm);
 
-      // 4. 脚（左右）
       const legGeo = new THREE.BoxGeometry(0.24, 0.5, 0.24);
       const leftLeg = new THREE.Mesh(legGeo, blackMat);
       leftLeg.position.set(-0.14, 0.25, 0);
@@ -352,21 +394,19 @@
       return group;
     }
 
-    // ✨ 見た目が全く違う「精霊モンスター（ぷにぷにスライム風）」
+    // 精霊モンスター（スライム風）
     function createSpiritMonster(colorHex, scale = 1) {
       const group = new THREE.Group();
       const mainMat = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.2, metalness: 0.1 });
       const eyeMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
       const pupilMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
 
-      // 体（丸っこいスライム体型）
       const body = new THREE.Mesh(new THREE.SphereGeometry(0.45, 16, 12), mainMat);
       body.position.y = 0.4;
       body.scale.set(1, 0.8, 1);
       body.castShadow = true;
       group.add(body);
 
-      // アンテナ（頭の上の光るポッチ）
       const antennaStem = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.3), mainMat);
       antennaStem.position.y = 0.8;
       group.add(antennaStem);
@@ -375,7 +415,6 @@
       antennaOrb.position.y = 0.95;
       group.add(antennaOrb);
 
-      // 大きなひとつ目（または可愛いクリクリ目）
       const eye = new THREE.Mesh(new THREE.SphereGeometry(0.15, 12, 12), eyeMat);
       eye.position.set(0, 0.45, 0.35);
       group.add(eye);
@@ -393,7 +432,6 @@
         player.traverse((child) => {
           if (child.isMesh && child.material.color) {
             const h = child.material.color.getHex();
-            // 肌色・黒・チーク・目以外（スーツの色）を更新
             if (h !== 0xffdbac && h !== 0x222222 && h !== 0xff7675 && h !== 0xffffff && h !== 0x111111) {
               child.material.color.setHex(colorHex);
             }
@@ -419,8 +457,8 @@
           const rect = container.getBoundingClientRect();
           basePos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
           joystickBase.style.display = 'block';
-          joystickBase.style.left = (basePos.x - 60) + 'px';
-          joystickBase.style.top = (basePos.y - 60) + 'px';
+          joystickBase.style.left = (basePos.x - 55) + 'px';
+          joystickBase.style.top = (basePos.y - 55) + 'px';
           joystickStick.style.transform = `translate(0px, 0px)`;
         }
       });
@@ -554,6 +592,12 @@
         player.position.z = Math.max(-9, Math.min(9, player.position.z));
       }
 
+      // ✨ カメラがプレイヤーを追いかけるように追従処理を追加！
+      camera.position.x += (player.position.x - camera.position.x) * 0.1;
+      camera.position.y = 11; // 高さを固定
+      camera.position.z += ((player.position.z + 9) - camera.position.z) * 0.1; // プレイヤーの後ろ斜め上から追う
+      camera.lookAt(player.position.x, player.position.y + 0.5, player.position.z);
+
       const soulMesh = scene.children.find(c => c.geometry && c.geometry.type === 'SphereGeometry' && c.material.emissive);
 
       if (soulActive && !hasSoul && soulMesh) {
@@ -580,7 +624,6 @@
           const found = zukanMaster.find(item => item.key === spiritName);
           if (found) found.discovered = true;
 
-          // 拠点に精霊モンスター（スライム風）を生成
           const spiritMesh = createSpiritMonster(spiritColor, sizeScale * 0.8);
           spiritMesh.position.set(-5 + (Math.random() - 0.5) * 2.5, 0, -5 + (Math.random() - 0.5) * 2.5);
           scene.add(spiritMesh);
